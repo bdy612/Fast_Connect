@@ -6,26 +6,26 @@ import string
 from client import Client
 from server import Server
 from main import Encription
+import gdrive_storage
 
-# Path to the shared user/friendship database
-_USERS_DB = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'users_db.json')
+_USERS_DB_FILENAME = 'users_db.json'
+_USERS_DB_DEFAULT = {'users': {}, 'friendships': {}, 'next_user_number': 1}
 
 
 def _load_db():
-    """Load users_db.json, returning an empty template if missing."""
-    if os.path.exists(_USERS_DB):
-        try:
-            with open(_USERS_DB, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except Exception:
-            pass
-    return {'users': {}, 'friendships': {}, 'next_user_number': 1}
+    """Load users_db.json from Google Drive, returning an empty template if missing."""
+    try:
+        data = gdrive_storage.load_json(_USERS_DB_FILENAME, default=None)
+        if data is not None:
+            return data
+    except Exception:
+        pass
+    return dict(_USERS_DB_DEFAULT)
 
 
 def _save_db(db):
-    """Write db dict back to users_db.json."""
-    with open(_USERS_DB, 'w', encoding='utf-8') as f:
-        json.dump(db, f, indent=4)
+    """Write db dict back to users_db.json on Google Drive."""
+    gdrive_storage.save_json(_USERS_DB_FILENAME, db)
 
 
 class FastConnectServer:

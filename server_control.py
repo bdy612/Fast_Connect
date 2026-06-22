@@ -12,8 +12,9 @@ import os
 import hashlib
 import datetime
 from fast_connect import FastConnectServer
+import gdrive_storage
 
-SERVER_CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'server_config.json')
+_SERVER_CONFIG_FILENAME = 'server_config.json'
 
 
 # ------------------------------------------------------------------
@@ -24,18 +25,17 @@ def _hash(text):
 
 
 def _load_cfg():
-    if os.path.exists(SERVER_CONFIG_FILE):
-        try:
-            with open(SERVER_CONFIG_FILE) as f:
-                return json.load(f)
-        except Exception:
-            pass
+    try:
+        data = gdrive_storage.load_json(_SERVER_CONFIG_FILENAME, default=None)
+        if data is not None:
+            return data
+    except Exception:
+        pass
     return {}
 
 
 def _save_cfg(cfg):
-    with open(SERVER_CONFIG_FILE, 'w') as f:
-        json.dump(cfg, f, indent=4)
+    gdrive_storage.save_json(_SERVER_CONFIG_FILENAME, cfg)
 
 
 # ------------------------------------------------------------------

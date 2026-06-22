@@ -3,8 +3,9 @@ from tkinter import ttk, messagebox
 import json
 import os
 import hashlib
+import gdrive_storage
 
-USERS_DB_FILE = os.path.join(os.path.dirname(__file__), 'users_db.json')
+_USERS_DB_FILENAME = 'users_db.json'
 
 
 def hash_password(password):
@@ -13,20 +14,19 @@ def hash_password(password):
 
 
 def load_users_db():
-    """Load the users database from JSON file"""
-    if os.path.exists(USERS_DB_FILE):
-        try:
-            with open(USERS_DB_FILE, 'r') as f:
-                return json.load(f)
-        except Exception:
-            pass
+    """Load the users database from Google Drive"""
+    try:
+        data = gdrive_storage.load_json(_USERS_DB_FILENAME, default=None)
+        if data is not None:
+            return data
+    except Exception:
+        pass
     return {'users': {}, 'next_user_number': 1}
 
 
 def save_users_db(db):
-    """Save the users database to JSON file"""
-    with open(USERS_DB_FILE, 'w') as f:
-        json.dump(db, f, indent=4)
+    """Save the users database to Google Drive"""
+    gdrive_storage.save_json(_USERS_DB_FILENAME, db)
 
 
 class LoginWindow:
