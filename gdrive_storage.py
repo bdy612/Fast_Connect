@@ -32,7 +32,7 @@ _CREDENTIALS_FILE = os.path.join(
 )
 
 # The Google Drive folder ID where JSON files will be stored.
-DRIVE_FOLDER_ID = "https://drive.google.com/drive/folders/1EFpfHNYcP9qqSQ0AS-pvyka4_9xGLj86"
+DRIVE_FOLDER_ID = "1EFpfHNYcP9qqSQ0AS-pvyka4_9xGLj86"
 
 # ------------------------------------------------------------------
 # Internal helpers
